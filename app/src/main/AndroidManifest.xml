@@ -19,7 +19,9 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".service.MyFirebaseMessagingService">
+        <service
+            android:name=".service.MyFirebaseMessagingService"
+            android:directBootAware="true">
             <!--            android:stopWithTask="false"-->
             <!--            android:exported="false"-->
             <intent-filter>
