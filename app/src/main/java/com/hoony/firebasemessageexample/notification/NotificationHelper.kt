@@ -3,7 +3,9 @@ package com.hoony.firebasemessageexample.notification
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.hoony.firebasemessageexample.R
@@ -46,7 +48,11 @@ class NotificationHelper {
             }
         }
 
-        private fun buildNotification(context: Context, title: String, message: String) : Notification {
+        private fun buildNotification(
+            context: Context,
+            title: String,
+            message: String
+        ): Notification {
             val notificationBuilder = NotificationCompat.Builder(context, NOTIFICATION_ID)
                 .apply {
                     setSmallIcon(R.drawable.ic_launcher_background)
@@ -55,11 +61,18 @@ class NotificationHelper {
                     setWhen(System.currentTimeMillis())
                     setContentTitle(title)
                     setContentText(message)
-                    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
                         setVibrate(longArrayOf(500, 500))
                     }
                 }
             return notificationBuilder.build()
+        }
+
+        private fun getPendingIntent(context: Context): PendingIntent {
+            val intent = Intent()
+            val pendingIntent = PendingIntent.getService(context, 0, intent, 0)
+
+            return pendingIntent
         }
     }
 }
