@@ -8,6 +8,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import androidx.core.app.TaskStackBuilder
+import com.hoony.firebasemessageexample.MainActivity
 import com.hoony.firebasemessageexample.R
 
 class NotificationHelper {
@@ -69,7 +71,16 @@ class NotificationHelper {
         }
 
         private fun getPendingIntent(context: Context): PendingIntent {
-            val intent = Intent()
+            // Create an Intent for the activity you want to start
+            val intent = Intent(context, MainActivity::class.java)
+            // Create the TaskStackBuilder
+            val mainPendingIntent: PendingIntent? = TaskStackBuilder.create(context).run {
+                // Add the intent, which inflates the back stack
+                addNextIntentWithParentStack(intent)
+                // Get the PendingIntent containing the entire back stack
+                getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+            }
+
             val pendingIntent = PendingIntent.getService(context, 0, intent, 0)
 
             return pendingIntent
