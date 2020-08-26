@@ -55,6 +55,8 @@ class NotificationHelper {
             title: String,
             message: String
         ): Notification {
+            val pendingIntent = getPendingIntent(context)
+
             val notificationBuilder = NotificationCompat.Builder(context, NOTIFICATION_ID)
                 .apply {
                     setSmallIcon(R.drawable.ic_launcher_background)
@@ -66,24 +68,25 @@ class NotificationHelper {
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
                         setVibrate(longArrayOf(500, 500))
                     }
+                    if (pendingIntent != null) {
+                        setContentIntent(pendingIntent)
+                    }
                 }
             return notificationBuilder.build()
         }
 
-        private fun getPendingIntent(context: Context): PendingIntent {
+        private fun getPendingIntent(context: Context): PendingIntent? {
             // Create an Intent for the activity you want to start
-            val intent = Intent(context, MainActivity::class.java)
+            val intent = Intent(context, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
             // Create the TaskStackBuilder
-            val mainPendingIntent: PendingIntent? = TaskStackBuilder.create(context).run {
+            return TaskStackBuilder.create(context).run {
                 // Add the intent, which inflates the back stack
                 addNextIntentWithParentStack(intent)
                 // Get the PendingIntent containing the entire back stack
                 getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
             }
-
-            val pendingIntent = PendingIntent.getService(context, 0, intent, 0)
-
-            return pendingIntent
         }
     }
 }
